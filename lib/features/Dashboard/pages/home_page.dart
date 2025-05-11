@@ -12,13 +12,13 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          hasDiet ? 'Menu del dia' : 'Crear dieta',
+          !hasDiet ? 'Menu del dia' : 'Crear dieta',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
          backgroundColor: const Color(0xFFD1D696),
          centerTitle: true,
       ),
-      body: hasDiet ? const DietList() : const CreateDietButton(),
+      body: !hasDiet ?  DietList() : const CreateDietButton(),
     );
   }
 }

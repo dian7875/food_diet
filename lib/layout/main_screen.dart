@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.green,
         backgroundColor: Color(0xFFD1D696),
-        unselectedItemColor: Colors.grey,
+        unselectedItemColor: const Color.fromARGB(255, 0, 0, 0),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
           BottomNavigationBarItem(icon: Icon(Icons.format_list_bulleted), label: 'Mis comidas'),
