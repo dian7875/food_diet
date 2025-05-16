@@ -16,7 +16,7 @@ class DietCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFFF5F5F5),
           borderRadius: BorderRadius.circular(12),
-          border: Border(left: BorderSide(color: Color(0xFFFCA838), width: 5)),
+          border: Border(bottom: BorderSide(color: Color(0xFFFCA838), width: 5)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
