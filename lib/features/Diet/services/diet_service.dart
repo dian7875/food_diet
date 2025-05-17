@@ -4,7 +4,8 @@ class DietService {
   final Dio _dio = Dio(BaseOptions(baseUrl: 'https://tu-api.com'));
 
   Future<void> updateProfile(Map<String, dynamic> profileData) async {
-    await _dio.patch('/perfil', data: profileData);
+    print('Enviando perfil:');
+    print(profileData); 
   }
 
   Future<void> addCondition(Map<String, dynamic> conditionData) async {

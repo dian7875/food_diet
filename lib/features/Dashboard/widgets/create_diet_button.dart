@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:food_diet/features/Diet/widgets/create_diet_form.dart';
 
 class CreateDietButton extends StatelessWidget {
-  const CreateDietButton({super.key});
+  final VoidCallback? onFinished;
+
+  const CreateDietButton({super.key, this.onFinished});
 
   @override
   Widget build(BuildContext context) {
-    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -23,7 +24,7 @@ class CreateDietButton extends StatelessWidget {
                   BoxShadow(
                     color: const Color.fromARGB(255, 58, 139, 87),
                     blurRadius: 120,
-                    offset: Offset(8, 8),
+                    offset: const Offset(8, 8),
                   ),
                 ],
                 borderRadius: BorderRadius.circular(100),
@@ -39,9 +40,9 @@ class CreateDietButton extends StatelessWidget {
                       width: 80,
                     ),
                   ),
-                  Positioned(
+                  const Positioned(
                     top: 40,
-                    child: const Text(
+                    child: Text(
                       'Crear Dieta',
                       style: TextStyle(
                         fontSize: 20,
@@ -59,10 +60,14 @@ class CreateDietButton extends StatelessWidget {
     );
   }
 
-  void _navigateToCreateDiet(BuildContext context) {
-    Navigator.push(
+  void _navigateToCreateDiet(BuildContext context) async {
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const CreateDietForm()),
     );
+
+    if (result == true && onFinished != null) {
+      onFinished!(); 
+    }
   }
 }
