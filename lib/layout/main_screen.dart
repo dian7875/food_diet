@@ -14,8 +14,8 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
   final List<String> _routes = [
-    '/home',
-    '/search',
+    '/dashboard',
+    '/MyFoods',
     '/diet',
     '/profile',
     '/settings',
