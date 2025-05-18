@@ -5,7 +5,7 @@ class DietService {
 
   Future<void> updateProfile(Map<String, dynamic> profileData) async {
     print('Enviando perfil:');
-    print(profileData); 
+    print(profileData);
   }
 
   Future<void> addCondition(Map<String, dynamic> conditionData) async {
@@ -15,4 +15,21 @@ class DietService {
   Future<void> deleteCondition(int conditionId) async {
     await _dio.delete('https://tu-api.com/conditions/$conditionId');
   }
+
+  Future<void> deleteRecipeById(String id) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    print('Receta con ID $id eliminada correctamente');
+  }
+
+  Future<void> updateRecipeById(String id, Map<String, dynamic> data) async {
+    print('🔄 Editando receta con ID: $id');
+    print('📦 Datos enviados:');
+    print(data);
+  }
+  
+    Future<void> createRecipe(Map<String, dynamic> data) async {
+    print('🆕 Creando receta con los siguientes datos:');
+    print(data);
+  }
+
 }

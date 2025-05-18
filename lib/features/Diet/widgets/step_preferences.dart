@@ -22,7 +22,7 @@ class _StepPreferencesState extends State<StepPreferences> {
   final Map<String, List<Map<String, dynamic>>> groupedFoodOptions = {
     'Frutas': [
       {'name': 'Manzana', 'icon': Icons.apple},
-      {'name': 'Banana', 'icon': Icons.food_bank},  // usa iconos adecuados
+      {'name': 'Banana', 'icon': Icons.food_bank}, 
       {'name': 'Naranja', 'icon': Icons.circle},
     ],
     'Verduras y vegetales': [
