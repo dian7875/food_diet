@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -216,7 +217,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    
+                                      context.go('/MyProfile/special-needs');
                                   },
                                   child: const Text(
                                     'Mis necesidades especiales',
