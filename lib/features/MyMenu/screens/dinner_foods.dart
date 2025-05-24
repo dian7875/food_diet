@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_diet/features/Dashboard/services/dashboard_service.dart';
 import 'package:food_diet/features/Dashboard/widgets/diet_dialog.dart';
+import 'package:food_diet/features/MyMenu/widgets/add_recipe_btn.dart';
 import 'package:food_diet/features/MyMenu/widgets/food_card.dart';
 
 class DinnerFoodsScreen extends StatefulWidget {
@@ -78,14 +79,17 @@ class _DinnerFoodsScreenState extends State<DinnerFoodsScreen> {
                         return FoodCard(
                           recipe: food,
                           onTap: () => _showFoodDetails(food),
-                          onRefresh:
-                              _loadDinnerFoods,
+                          onRefresh: _loadDinnerFoods,
                         );
                       },
                     ),
                   ),
                 ],
               ),
+      floatingActionButton: AddRecipeButton(
+        onRefresh: _loadDinnerFoods,
+        mealType: 'dinner',
+      ),
     );
   }
 }

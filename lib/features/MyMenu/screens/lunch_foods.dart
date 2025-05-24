@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_diet/features/Dashboard/services/dashboard_service.dart';
 import 'package:food_diet/features/Dashboard/widgets/diet_dialog.dart';
+import 'package:food_diet/features/MyMenu/widgets/add_recipe_btn.dart';
 import 'package:food_diet/features/MyMenu/widgets/food_card.dart';
 
 class LunchFoodsScreen extends StatefulWidget {
@@ -38,12 +39,8 @@ class _LunchFoodsScreenState extends State<LunchFoodsScreen> {
     }
   }
 
-
   void _showFoodDetails(Map<String, dynamic> food) {
-    showDialog(
-      context: context,
-      builder: (_) => DietDialog(recipe: food),
-    );
+    showDialog(context: context, builder: (_) => DietDialog(recipe: food));
   }
 
   @override
@@ -55,39 +52,44 @@ class _LunchFoodsScreenState extends State<LunchFoodsScreen> {
         foregroundColor: Colors.black87,
         elevation: 1,
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _error != null
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _error != null
               ? Center(child: Text(_error!))
               : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      child: Text(
-                        'Mis Recetas para almuerzo',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Text(
+                      'Mis Recetas para almuerzo',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: _lunchFoods.length,
-                        itemBuilder: (context, index) {
-                          final food = _lunchFoods[index];
-                          return FoodCard(
-                            recipe: food,
-                            onTap: () => _showFoodDetails(food),
-                              onRefresh: _loadLunchFoods,
-                          );
-                        },
-                      ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: _lunchFoods.length,
+                      itemBuilder: (context, index) {
+                        final food = _lunchFoods[index];
+                        return FoodCard(
+                          recipe: food,
+                          onTap: () => _showFoodDetails(food),
+                          onRefresh: _loadLunchFoods,
+                        );
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
+      floatingActionButton: AddRecipeButton(
+        onRefresh: _loadLunchFoods,
+        mealType: 'Lunch',
+      ),
     );
   }
 }

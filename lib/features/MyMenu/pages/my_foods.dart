@@ -7,16 +7,17 @@ class MyFoods extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final meals = [
-      {'name': 'Desayuno', 'route': '/breakfast', 'icon': Icons.free_breakfast},
-      {'name': 'Almuerzo', 'route': '/lunch', 'icon': Icons.lunch_dining},
-      {'name': 'Cena', 'route': '/dinner', 'icon': Icons.dinner_dining},
-      {'name': 'Merienda', 'route': '/snack', 'icon': Icons.emoji_food_beverage},
+      {'name': 'Desayuno', 'route': '/MyFoods/breakfast', 'icon': Icons.free_breakfast},
+      {'name': 'Almuerzo', 'route': '/MyFoods/lunch', 'icon': Icons.lunch_dining},
+      {'name': 'Cena', 'route': '/MyFoods/dinner', 'icon': Icons.dinner_dining},
+      {'name': 'Merienda', 'route': '/MyFoods/snack', 'icon': Icons.emoji_food_beverage},
     ];
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tus comidas del día'),
         backgroundColor: const Color(0xFFD1D696),
+        titleTextStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold,  fontSize: 20,), 
         centerTitle: true,
       ),
            body: Padding(

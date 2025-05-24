@@ -3,8 +3,13 @@ import 'package:food_diet/features/Diet/services/diet_service.dart';
 
 class CreateFoodDialog extends StatefulWidget {
   final VoidCallback onRefresh;
+  final String mealType;
 
-  const CreateFoodDialog({super.key, required this.onRefresh});
+  const CreateFoodDialog({
+    super.key,
+    required this.onRefresh,
+    required this.mealType,
+  });
 
   @override
   State<CreateFoodDialog> createState() => _CreateFoodDialogState();
@@ -21,9 +26,12 @@ class _CreateFoodDialogState extends State<CreateFoodDialog> {
     final payload = {
       'name': _nameController.text.trim(),
       'description': _descriptionController.text.trim(),
-      'ingredients': _ingredientsController.text.split(',').map((e) => e.trim()).toList(),
+      'ingredients':
+          _ingredientsController.text.split(',').map((e) => e.trim()).toList(),
       'steps': _stepsController.text.split('\n').map((e) => e.trim()).toList(),
-      'dietary_info': _dietaryInfoController.text.split(',').map((e) => e.trim()).toList(),
+      'dietary_info':
+          _dietaryInfoController.text.split(',').map((e) => e.trim()).toList(),
+      'meal_type': widget.mealType,
     };
 
     final foodService = DietService();
@@ -78,10 +86,7 @@ class _CreateFoodDialogState extends State<CreateFoodDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancelar'),
         ),
-        ElevatedButton(
-          onPressed: _submit,
-          child: const Text('Crear'),
-        ),
+        ElevatedButton(onPressed: _submit, child: const Text('Crear')),
       ],
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_diet/features/Dashboard/services/dashboard_service.dart';
 import 'package:food_diet/features/Dashboard/widgets/diet_dialog.dart';
+import 'package:food_diet/features/MyMenu/widgets/add_recipe_btn.dart';
 import 'package:food_diet/features/MyMenu/widgets/food_card.dart';
 
 class BreakfastFoodsScreen extends StatefulWidget {
@@ -46,6 +47,12 @@ class _BreakfastFoodsScreenState extends State<BreakfastFoodsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text('Desayunos'),
         backgroundColor: const Color(0xFFD1D696),
         foregroundColor: Colors.black87,
@@ -85,6 +92,10 @@ class _BreakfastFoodsScreenState extends State<BreakfastFoodsScreen> {
                   ),
                 ],
               ),
+      floatingActionButton: AddRecipeButton(
+        onRefresh: _loadBreakfastFoods,
+        mealType: 'breackfast',
+      ),
     );
   }
 }
