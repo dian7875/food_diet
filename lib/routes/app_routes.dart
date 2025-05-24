@@ -1,4 +1,4 @@
-import 'package:food_diet/features/Auth/pages/profile.dart';
+import 'package:food_diet/features/Profile/Pages/profile.dart';
 import 'package:food_diet/features/Dashboard/dashboard.dart';
 import 'package:food_diet/features/Auth/pages/welcome_page.dart';
 import 'package:food_diet/features/MyMenu/pages/my_foods.dart';
@@ -6,6 +6,7 @@ import 'package:food_diet/features/MyMenu/screens/breackfast_foods.dart';
 import 'package:food_diet/features/MyMenu/screens/dinner_foods.dart';
 import 'package:food_diet/features/MyMenu/screens/lunch_foods.dart';
 import 'package:food_diet/features/MyMenu/screens/snacks.dart';
+import 'package:food_diet/features/Profile/screens/special_needs.dart';
 import 'package:food_diet/layout/main_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,6 +27,12 @@ class AppRoutes {
           GoRoute(
             path: '/MyProfile',
             builder: (context, state) => const MyProfileScreen(),
+            routes: [
+              GoRoute(
+                path: 'special-needs',
+                builder: (context, state) => SpecialNeedsScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: '/MyFoods',
