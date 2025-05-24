@@ -1,3 +1,4 @@
+import 'package:food_diet/features/Auth/pages/profile.dart';
 import 'package:food_diet/features/Dashboard/dashboard.dart';
 import 'package:food_diet/features/Auth/pages/welcome_page.dart';
 import 'package:food_diet/features/MyMenu/pages/my_foods.dart';
@@ -23,24 +24,30 @@ class AppRoutes {
             builder: (context, state) => const Dashboard(),
           ),
           GoRoute(
+            path: '/MyProfile',
+            builder: (context, state) => const MyProfileScreen(),
+          ),
+          GoRoute(
             path: '/MyFoods',
             builder: (context, state) => const MyFoods(),
-          ),
-          GoRoute(
-            path: '/breakfast',
-            builder: (context, state) => const BreakfastFoodsScreen(),
-          ),
-          GoRoute(
-            path: '/lunch',
-            builder: (context, state) => const LunchFoodsScreen(),
-          ),
-          GoRoute(
-            path: '/dinner',
-            builder: (context, state) => const DinnerFoodsScreen(),
-          ),
-          GoRoute(
-            path: '/snack',
-            builder: (context, state) => const SnacksScreen(),
+            routes: [
+              GoRoute(
+                path: 'breakfast',
+                builder: (context, state) => const BreakfastFoodsScreen(),
+              ),
+              GoRoute(
+                path: 'lunch',
+                builder: (context, state) => const LunchFoodsScreen(),
+              ),
+              GoRoute(
+                path: 'dinner',
+                builder: (context, state) => const DinnerFoodsScreen(),
+              ),
+              GoRoute(
+                path: 'snack',
+                builder: (context, state) => const SnacksScreen(),
+              ),
+            ],
           ),
         ],
       ),

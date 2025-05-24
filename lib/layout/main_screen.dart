@@ -18,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
     '/MyFoods',
     '/diet',
     '/profile',
-    '/settings',
+    '/MyProfile',
   ];
 
   void _onItemTapped(int index) {
