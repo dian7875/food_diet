@@ -7,6 +7,7 @@ import 'package:food_diet/features/MyMenu/screens/dinner_foods.dart';
 import 'package:food_diet/features/MyMenu/screens/lunch_foods.dart';
 import 'package:food_diet/features/MyMenu/screens/snacks.dart';
 import 'package:food_diet/features/Profile/screens/special_needs.dart';
+import 'package:food_diet/features/ForeignFoods/pages/foreign_foods_screen.dart';
 import 'package:food_diet/layout/main_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -55,6 +56,10 @@ class AppRoutes {
                 builder: (context, state) => const SnacksScreen(),
               ),
             ],
+          ),
+          GoRoute(
+            path: '/foreign-foods',
+            builder: (context, state) => const ForeignFoodsScreen(),
           ),
         ],
       ),

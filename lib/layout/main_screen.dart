@@ -12,12 +12,11 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-
   final List<String> _routes = [
     '/dashboard',
     '/MyFoods',
     '/diet',
-    '/profile',
+    '/foreign-foods',
     '/MyProfile',
   ];
 
@@ -41,10 +40,22 @@ class _MainScreenState extends State<MainScreen> {
         unselectedItemColor: const Color.fromARGB(255, 0, 0, 0),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
-          BottomNavigationBarItem(icon: Icon(Icons.format_list_bulleted), label: 'Mis comidas'),
-          BottomNavigationBarItem(icon: Icon(Icons.auto_awesome_rounded), label: 'Logros'),
-          BottomNavigationBarItem(icon: Icon(Icons.restaurant_menu_sharp), label: 'Comidas del mundo'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline_sharp), label: 'Perfil'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.format_list_bulleted),
+            label: 'Mis comidas',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.auto_awesome_rounded),
+            label: 'Logros',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.restaurant_menu_sharp),
+            label: 'Comidas del mundo',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline_sharp),
+            label: 'Perfil',
+          ),
         ],
       ),
     );
