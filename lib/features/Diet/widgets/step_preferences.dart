@@ -18,28 +18,59 @@ class StepPreferences extends StatefulWidget {
 class _StepPreferencesState extends State<StepPreferences> {
   late List<String> selected;
 
-  // Define las opciones agrupadas
   final Map<String, List<Map<String, dynamic>>> groupedFoodOptions = {
-    'Frutas': [
-      {'name': 'Manzana', 'icon': Icons.apple},
-      {'name': 'Banana', 'icon': Icons.food_bank}, 
-      {'name': 'Naranja', 'icon': Icons.circle},
-    ],
-    'Verduras y vegetales': [
-      {'name': 'Lechuga', 'icon': Icons.spa},
-      {'name': 'Tomate', 'icon': Icons.local_florist},
-      {'name': 'Zanahoria', 'icon': Icons.emoji_food_beverage},
+    'Proteínas y grasas': [
+      {'name': 'Pollo', 'icon': 'assets/icons/pollo.png'},
+      {'name': 'Res', 'icon': 'assets/icons/res.png'},
+      {'name': 'Cerdo', 'icon': 'assets/icons/cerdo.png'},
+      {'name': 'Atún', 'icon': 'assets/icons/atun.png'},
+      {'name': 'Mariscos', 'icon': 'assets/icons/mariscos.png'},
+      {'name': 'Pescado', 'icon': 'assets/icons/pescado.png'},
+      {'name': 'Salmón', 'icon': 'assets/icons/salmon.png'},
+      {'name': 'Huevo', 'icon': 'assets/icons/huevo.png'},
+      {'name': 'Queso', 'icon': 'assets/icons/queso.png'},
     ],
     'Granos y carbohidratos': [
-      {'name': 'Arroz', 'icon': Icons.rice_bowl},
-      {'name': 'Pan', 'icon': Icons.bakery_dining},
-      {'name': 'Pasta', 'icon': Icons.restaurant},
+      {'name': 'Arroz', 'icon': 'assets/icons/arroz.png'},
+      {'name': 'Quinoa', 'icon': 'assets/icons/quinoa.png'},
+      {'name': 'Maíz', 'icon': 'assets/icons/maiz.png'},
+      {'name': 'Lentejas', 'icon': 'assets/icons/lentejas.png'},
+      {'name': 'Garbanzos', 'icon': 'assets/icons/garbanzos.png'},
+      {'name': 'Frijoles', 'icon': 'assets/icons/frijoles.png'},
+      {'name': 'Pastas', 'icon': 'assets/icons/pastas.png'},
+      {'name': 'Avena', 'icon': 'assets/icons/avena.png'},
+      {'name': 'Cereales', 'icon': 'assets/icons/cereales.png'},
+      {'name': 'Frutos Secos', 'icon': 'assets/icons/frutos_secos.png'},
+      {'name': 'Pan Blanco', 'icon': 'assets/icons/pan_blanco.png'},
+      {'name': 'Pan Integral', 'icon': 'assets/icons/pan_integral.png'},
     ],
-    'Proteínas y grasas': [
-      {'name': 'Pollo', 'icon': Icons.set_meal},
-      {'name': 'Carne', 'icon': Icons.restaurant},
-      {'name': 'Pescado', 'icon': Icons.food_bank},
-      {'name': 'Aguacate', 'icon': Icons.eco},
+    'Frutas': [
+      {'name': 'Manzana', 'icon': 'assets/icons/manzana.png'},
+      {'name': 'Banano', 'icon': 'assets/icons/banano.png'},
+      {'name': 'Mango', 'icon': 'assets/icons/mango.png'},
+      {'name': 'Fresa', 'icon': 'assets/icons/fresa.png'},
+      {'name': 'Maracuyá', 'icon': 'assets/icons/maracuya.png'},
+      {'name': 'Papaya', 'icon': 'assets/icons/papaya.png'},
+      {'name': 'Uvas', 'icon': 'assets/icons/uvas.png'},
+      {'name': 'Naranja', 'icon': 'assets/icons/naranja.png'},
+      {'name': 'Arándanos', 'icon': 'assets/icons/arandanos.png'},
+      {'name': 'Piña', 'icon': 'assets/icons/pina.png'},
+      {'name': 'Sandía', 'icon': 'assets/icons/sandia.png'},
+      {'name': 'Pitahaya', 'icon': 'assets/icons/pitahaya.png'},
+    ],
+    'Verduras y vegetales': [
+      {'name': 'Papa', 'icon': 'assets/icons/papa.png'},
+      {'name': 'Chayote', 'icon': 'assets/icons/chayote.png'},
+      {'name': 'Yuca', 'icon': 'assets/icons/yuca.png'},
+      {'name': 'Camote', 'icon': 'assets/icons/camote.png'},
+      {'name': 'Zanahoria', 'icon': 'assets/icons/zanahoria.png'},
+      {'name': 'Elote', 'icon': 'assets/icons/elote.png'},
+      {'name': 'Repollo', 'icon': 'assets/icons/repollo.png'},
+      {'name': 'Lechuga', 'icon': 'assets/icons/lechuga.png'},
+      {'name': 'Brocolí', 'icon': 'assets/icons/brocoli.png'},
+      {'name': 'Coliflor', 'icon': 'assets/icons/coliflor.png'},
+      {'name': 'Pepino', 'icon': 'assets/icons/pepino.png'},
+      {'name': 'Tomate', 'icon': 'assets/icons/tomate.png'},
     ],
   };
 
@@ -65,40 +96,45 @@ class _StepPreferencesState extends State<StepPreferences> {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: groupedFoodOptions.entries.map((group) {
-          final groupName = group.key;
-          final options = group.value;
+        children:
+            groupedFoodOptions.entries.map((group) {
+              final groupName = group.key;
+              final options = group.value;
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Selecciona las $groupName de tu preferencia',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: options.map((item) {
-                    final name = item['name'] as String;
-                    final icon = item['icon'] as IconData;
-                    final isSelected = selected.contains(name);
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Selecciona las $groupName de tu preferencia',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children:
+                          options.map((item) {
+                            final name = item['name'] as String;
+                            final iconPath = item['icon'] as String;
+                            final isSelected = selected.contains(name);
 
-                    return PreferenceCard(
-                      name: name,
-                      iconData: icon,
-                      selected: isSelected,
-                      onTap: () => toggleSelection(name),
-                    );
-                  }).toList(),
+                            return PreferenceCard(
+                              name: name,
+                              iconPath: iconPath,
+                              isSelected: isSelected,
+                              onTap: () => toggleSelection(name),
+                            );
+                          }).toList(),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }

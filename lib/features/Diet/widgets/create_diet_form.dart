@@ -36,9 +36,7 @@ class _CreateDietFormState extends State<CreateDietForm> {
       if (conditions.isNotEmpty) {
         setState(() => currentStep++);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Por favor agrega al menos una condición')),
-        );
+        setState(() => currentStep++);
       }
     } else {
       setState(() => currentStep++);
@@ -70,9 +68,9 @@ class _CreateDietFormState extends State<CreateDietForm> {
       Navigator.pop(context, true);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al crear la dieta: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error al crear la dieta: $e')));
     } finally {
       if (mounted) setState(() => isLoading = false);
     }
@@ -99,13 +97,14 @@ class _CreateDietFormState extends State<CreateDietForm> {
       ),
       StepConditions(
         initialConditions: conditions,
-        onConditionsChanged: (updatedConditions) =>
-            setState(() => conditions = List.from(updatedConditions)),
+        onConditionsChanged:
+            (updatedConditions) =>
+                setState(() => conditions = List.from(updatedConditions)),
       ),
       StepPreferences(
         selectedPreferences: selectedPreferences,
-        onPreferencesChanged: (prefs) =>
-            setState(() => selectedPreferences = List.from(prefs)),
+        onPreferencesChanged:
+            (prefs) => setState(() => selectedPreferences = List.from(prefs)),
       ),
     ];
 
@@ -128,29 +127,35 @@ class _CreateDietFormState extends State<CreateDietForm> {
                     child: const Text('Atrás'),
                   ),
                 ElevatedButton(
-                  onPressed: isLoading
-                      ? null
-                      : () {
-                          if (currentStep == 0) {
-                            if (formKeyStep1.currentState!.validate()) {
+                  onPressed:
+                      isLoading
+                          ? null
+                          : () {
+                            if (currentStep == 0) {
+                              if (formKeyStep1.currentState!.validate()) {
+                                _nextStep();
+                              }
+                            } else if (currentStep == steps.length - 1) {
+                              _submitForm();
+                            } else {
                               _nextStep();
                             }
-                          } else if (currentStep == steps.length - 1) {
-                            _submitForm();
-                          } else {
-                            _nextStep();
-                          }
-                        },
-                  child: isLoading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
+                          },
+                  child:
+                      isLoading
+                          ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                          : Text(
+                            currentStep == steps.length - 1
+                                ? 'Guardar'
+                                : 'Siguiente',
                           ),
-                        )
-                      : Text(currentStep == steps.length - 1 ? 'Guardar' : 'Siguiente'),
                 ),
               ],
             ),
