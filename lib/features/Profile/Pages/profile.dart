@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:food_diet/features/Auth/services/auth_service.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -9,7 +10,9 @@ class MyProfileScreen extends StatefulWidget {
 }
 class _MyProfileScreenState extends State<MyProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-
+  final AuthService _authService = AuthService();
+  
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _edadController = TextEditingController();
   final TextEditingController _alturaController = TextEditingController();
   final TextEditingController _pesoController = TextEditingController();
@@ -30,9 +33,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     super.initState();
     _loadProfileData();
   }
-
   Future<void> _loadProfileData() async {
     await Future.delayed(const Duration(seconds: 1));
+
+    // Obtener email del usuario autenticado
+    final userEmail = await _authService.getUserEmail();
+    _emailController.text = userEmail ?? 'usuario@ejemplo.com';
 
     final profileData = {
       "edad": "29",
@@ -79,9 +85,37 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       const SnackBar(content: Text('Perfil actualizado correctamente')),
     );
   }
+  Future<void> _logout() async {
+    // Mostrar diálogo de confirmación
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Cerrar sesión'),
+        content: const Text('¿Estás seguro que deseas cerrar sesión?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Cerrar sesión'),
+          ),
+        ],
+      ),
+    );
+    
+    if (confirm == true) {
+      await _authService.logout();
+      if (mounted) {
+        context.go('/login');
+      }
+    }
+  }
 
   @override
   void dispose() {
+    _emailController.dispose();
     _edadController.dispose();
     _alturaController.dispose();
     _pesoController.dispose();
@@ -91,12 +125,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final greenHeight = size.height * 0.1;
-
-    return Scaffold(
+    final greenHeight = size.height * 0.1;    return Scaffold(
       appBar: AppBar(
         title: const Text('Mi Perfil'),
         backgroundColor: const Color(0xFFD1D696),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Cerrar sesión',
+            onPressed: () => _logout(),
+          ),
+        ],
         titleTextStyle: const TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
@@ -131,8 +170,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 color: Colors.white,
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 32),
+                          ),                          const SizedBox(height: 32),
+                          _buildEmailInfo(),
                           _buildInputField(
                             label: 'Edad',
                             controller: _edadController,
@@ -262,7 +301,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       ),
     );
   }
-
   Widget _buildInputField({
     required String label,
     required TextEditingController controller,
@@ -282,6 +320,63 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ? TextInputType.number
             : TextInputType.text,
         validator: validator,
+      ),
+    );
+  }
+  
+  // Widget para mostrar la información del email
+  Widget _buildEmailInfo() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(vertical: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 5,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          const CircleAvatar(
+            radius: 25,
+            backgroundColor: Color(0xFFD1D696),
+            child: Icon(
+              Icons.email,
+              size: 22,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Email',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _emailController.text,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
