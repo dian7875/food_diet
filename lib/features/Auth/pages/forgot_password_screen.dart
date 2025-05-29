@@ -18,12 +18,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     _emailController.dispose();
     super.dispose();
   }
+
   void _submitForm() {
     // Mostrar que se ha enviado el email y luego redireccionar al login
     setState(() {
       _emailSent = true;
     });
-    
+
     // Después de un momento, redirigir al login
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
@@ -34,10 +35,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   void _showErrorSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
 
@@ -45,15 +43,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final lightGreen = const Color.fromARGB(255, 213, 213, 152);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Recuperar Contraseña',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: lightGreen,
         centerTitle: true,
@@ -76,10 +71,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(height: 20),
                 const Text(
                   'Correo enviado',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
                 Text(
@@ -105,10 +97,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   child: const Text(
                     'Volver a inicio de sesión',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ] else ...[
@@ -159,31 +148,33 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               if (value == null || value.isEmpty) {
                                 return 'Por favor ingresa tu email';
                               }
-                              if (!value.contains('@') || !value.contains('.')) {
+                              if (!value.contains('@') ||
+                                  !value.contains('.')) {
                                 return 'Por favor ingresa un email válido';
                               }
                               return null;
                             },
                           ),
                           const SizedBox(height: 30),
-                          
-                          // Submit button                        ElevatedButton(
-                          onPressed: _submitForm,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: lightGreen,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+
+                          // Submit button
+                          ElevatedButton(
+                            onPressed: _submitForm,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: lightGreen,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
-                          ),
-                          child: const Text(
-                            'Enviar Instrucciones',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                            child: const Text(
+                              'Enviar Instrucciones',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
                           ),
                         ],
                       ),
@@ -191,7 +182,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                
+
                 // Back to login
                 GestureDetector(
                   onTap: () {
