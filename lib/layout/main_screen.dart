@@ -15,7 +15,6 @@ class _MainScreenState extends State<MainScreen> {
   final List<String> _routes = [
     '/dashboard',
     '/MyFoods',
-    '/diet',
     '/foreign-foods',
     '/MyProfile',
   ];
@@ -43,10 +42,6 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.format_list_bulleted),
             label: 'Mis comidas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.auto_awesome_rounded),
-            label: 'Logros',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant_menu_sharp),
