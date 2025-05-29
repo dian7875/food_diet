@@ -40,9 +40,8 @@ class WelcomePage extends StatelessWidget {
           const SizedBox(height: 24),
           Center(
             child: Column(
-              children: [
-                ElevatedButton(
-                  onPressed: () => context.go('/dashboard'),
+              children: [                ElevatedButton(
+                  onPressed: () => context.go('/login'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     padding: const EdgeInsets.symmetric(
