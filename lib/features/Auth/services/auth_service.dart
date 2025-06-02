@@ -1,31 +1,43 @@
+import 'package:dio/dio.dart';
+import 'package:food_diet/core/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
+  final api = ApiService();
+
   static const String _tokenKey = 'auth_token';
   static const String _userEmailKey = 'user_email';
 
-  // Simula un login - En un entorno real, esto se conectaría a un API
-  Future<bool> login(String email, String password) async {
+  Future<String> login(String email, String password) async {
+    print(email);
+    print(password);
+
     try {
-      // Aquí iría la lógica de autenticación real con un servicio backend
-      // Por ahora, simularemos una autenticación exitosa con cualquier email válido
-      // y contraseña de más de 6 caracteres
-      
-      if (email.contains('@') && email.contains('.') && password.length >= 6) {
-        // Simulamos un delay de red
-        await Future.delayed(const Duration(seconds: 1));
-        
-        // Guardamos el token ficticio y el email del usuario
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString(_tokenKey, 'fake_token_${DateTime.now().millisecondsSinceEpoch}');
-        await prefs.setString(_userEmailKey, email);
-        
-        return true;
+      final response = await api.dio.post(
+        '/auth/login',
+        data: {'email': email, 'password': password},
+      );
+
+      if (response.statusCode == 201) {
+        final token = response.data['access_token'];
+        if (token != null && token is String && token.isNotEmpty) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString(_tokenKey, token);
+
+          await prefs.setString(_userEmailKey, email);
+          return 'Inicio de sesión exitoso';
+        } else {
+          return 'Token no recibido del servidor';
+        }
+      } else {
+        return 'Credenciales incorrectas';
       }
-      return false;
+    } on DioError catch (dioError) {
+      print('DioError: ${dioError.response?.data ?? dioError.message}');
+      return 'Error en la conexión: verifica tu red o intenta más tarde';
     } catch (e) {
       print('Error de autenticación: $e');
-      return false;
+      return 'Ocurrió un error al iniciar sesión. Intenta de nuevo.';
     }
   }
 
@@ -34,8 +46,9 @@ class AuthService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString(_tokenKey);
-      return token != null;
+      return token != null && token.isNotEmpty;
     } catch (e) {
+      print('Error verificando autenticación: $e');
       return false;
     }
   }
@@ -44,8 +57,10 @@ class AuthService {
   Future<String?> getUserEmail() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      return prefs.getString(_userEmailKey);
+      final email = prefs.getString(_userEmailKey);
+      return email != null && email.isNotEmpty ? email : null;
     } catch (e) {
+      print('Error obteniendo email: $e');
       return null;
     }
   }
@@ -62,25 +77,21 @@ class AuthService {
   }
 
   // Registrar un nuevo usuario - simulado
-  Future<bool> register(String email, String password) async {
+  Future<String> register(String email, String password) async {
     try {
-      // Aquí iría la lógica de registro real
-      // Por ahora, simularemos un registro exitoso
-      
-      if (email.contains('@') && email.contains('.') && password.length >= 6) {
-        await Future.delayed(const Duration(seconds: 1));
-        
-        // Simulamos el registro guardando directamente las credenciales
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString(_tokenKey, 'fake_token_${DateTime.now().millisecondsSinceEpoch}');
-        await prefs.setString(_userEmailKey, email);
-        
-        return true;
+      final response = await api.dio.post(
+        '/auth/register',
+        data: {'email': email, 'password': password},
+      );
+
+      if (response.statusCode == 201) {
+        return 'Registro exitoso';
+      } else {
+        return 'No se pudo registrar el usuario';
       }
-      return false;
     } catch (e) {
       print('Error de registro: $e');
-      return false;
+      return 'Ocurrió un error al registrar. Intenta de nuevo.';
     }
   }
 
@@ -89,7 +100,7 @@ class AuthService {
     try {
       // Aquí iría la lógica para restaurar la contraseña
       // Por ahora, simularemos que se envió un correo
-      
+
       if (email.contains('@') && email.contains('.')) {
         await Future.delayed(const Duration(seconds: 1));
         return true;
