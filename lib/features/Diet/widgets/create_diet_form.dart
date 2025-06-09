@@ -49,32 +49,33 @@ class _CreateDietFormState extends State<CreateDietForm> {
     }
   }
 
-  Future<void> _submitForm() async {
-    setState(() => isLoading = true);
-    try {
-      await _dietService.updateProfile({
-        'age': ageController.text,
-        'height': heightController.text,
-        'weight': weightController.text,
-        'objective': objective,
-        'conditions': conditions,
-        'preferences': selectedPreferences,
-      });
+Future<void> _submitForm() async {
+  setState(() => isLoading = true);
+  try {
+    final message = await _dietService.updateProfile({
+      'age': ageController.text,
+      'height': heightController.text,
+      'weight': weightController.text,
+      'objective': objective,
+      'preferences': selectedPreferences,
+      'conditions': conditions,
+    });
 
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Dieta creada exitosamente')),
-      );
-      Navigator.pop(context, true);
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error al crear la dieta: $e')));
-    } finally {
-      if (mounted) setState(() => isLoading = false);
-    }
+    if (!mounted) return;
+    Navigator.of(context).pop(true);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  } catch (e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error al crear la dieta: $e')),
+    );
+  } finally {
+    if (mounted) setState(() => isLoading = false);
   }
+}
+
 
   @override
   void dispose() {

@@ -22,6 +22,7 @@ class _DashboardState extends State<Dashboard> {
     final prefs = await SharedPreferences.getInstance();
     bool? dietStatus = prefs.getBool('hasDiet') ?? false;
 
+    if (!mounted) return;
     setState(() {
       hasDiet = dietStatus;
     });

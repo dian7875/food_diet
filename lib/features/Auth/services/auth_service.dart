@@ -9,9 +9,6 @@ class AuthService {
   static const String _userEmailKey = 'user_email';
 
   Future<String> login(String email, String password) async {
-    print(email);
-    print(password);
-
     try {
       final response = await api.dio.post(
         '/auth/login',
@@ -20,10 +17,11 @@ class AuthService {
 
       if (response.statusCode == 201) {
         final token = response.data['access_token'];
+        final userId = response.data['userId'];
         if (token != null && token is String && token.isNotEmpty) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString(_tokenKey, token);
-
+          await prefs.setInt('userId', userId);
           await prefs.setString(_userEmailKey, email);
           return 'Inicio de sesión exitoso';
         } else {
@@ -32,7 +30,7 @@ class AuthService {
       } else {
         return 'Credenciales incorrectas';
       }
-    } on DioError catch (dioError) {
+    } on DioException catch (dioError) {
       print('DioError: ${dioError.response?.data ?? dioError.message}');
       return 'Error en la conexión: verifica tu red o intenta más tarde';
     } catch (e) {

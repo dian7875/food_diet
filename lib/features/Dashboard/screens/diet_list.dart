@@ -25,7 +25,7 @@ class _DietListState extends State<DietList> {
 
   Future<void> _loadRecipes() async {
     try {
-      final data = await _foodService.getRecipes();
+      final data = await _foodService.generateRecipesForUser();
       setState(() {
         _recipes = data;
         _isLoading = false;

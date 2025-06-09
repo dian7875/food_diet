@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_diet/features/Diet/services/diet_service.dart';
+import 'package:food_diet/features/MyMenu/services/my_menu_service.dart';
 
 class CreateFoodDialog extends StatefulWidget {
   final VoidCallback onRefresh;
@@ -20,26 +20,49 @@ class _CreateFoodDialogState extends State<CreateFoodDialog> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _ingredientsController = TextEditingController();
   final TextEditingController _stepsController = TextEditingController();
-  final TextEditingController _dietaryInfoController = TextEditingController();
 
-  void _submit() async {
-    final payload = {
-      'name': _nameController.text.trim(),
-      'description': _descriptionController.text.trim(),
-      'ingredients':
-          _ingredientsController.text.split(',').map((e) => e.trim()).toList(),
-      'steps': _stepsController.text.split('\n').map((e) => e.trim()).toList(),
-      'dietary_info':
-          _dietaryInfoController.text.split(',').map((e) => e.trim()).toList(),
-      'meal_type': widget.mealType,
-    };
-
-    final foodService = DietService();
-    await foodService.createRecipe(payload);
-
-    Navigator.of(context).pop();
-    widget.onRefresh();
+void _submit() async {
+  if (_nameController.text.trim().isEmpty ||
+      _ingredientsController.text.trim().isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Nombre e ingredientes son obligatorios')),
+    );
+    return;
   }
+
+  final payload = {
+    'name': _nameController.text.trim(),
+    'description': _descriptionController.text.trim(),
+    'ingredients': _ingredientsController.text
+        .split(',')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList(),
+    'steps': _stepsController.text
+        .split('\n')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList(),
+    'category': widget.mealType,
+  };
+
+  final foodService = MyMenuService();
+
+  try {
+    final message = await foodService.createRecipe(payload);
+
+    if (context.mounted) {
+      Navigator.of(context).pop(message);
+      widget.onRefresh();
+    }
+  } catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al crear receta: $e')),
+      );
+    }
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -70,13 +93,6 @@ class _CreateFoodDialogState extends State<CreateFoodDialog> {
                 labelText: 'Pasos (separados por salto de línea)',
               ),
               maxLines: 4,
-            ),
-            TextField(
-              controller: _dietaryInfoController,
-              decoration: const InputDecoration(
-                labelText: 'Información dietética (separada por coma)',
-              ),
-              maxLines: 1,
             ),
           ],
         ),

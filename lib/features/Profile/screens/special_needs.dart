@@ -162,8 +162,8 @@ class _SpecialNeedsScreenState extends State<SpecialNeedsScreen> {
         onPressed: () => _addOrEditNeed(),
         backgroundColor: const Color(0xFFD1D696),
         foregroundColor: Colors.white,
-        child: const Icon(Icons.add),
         tooltip: 'Añadir necesidad especial',
+        child: const Icon(Icons.add),
       ),
     );
   }
