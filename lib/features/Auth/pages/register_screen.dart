@@ -15,7 +15,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
   bool _isPasswordVisible = false;
-  bool _isLoading = false;
   
  @override
   void dispose() {
@@ -46,14 +45,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
 
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
     try {
       final result = await AuthService().register(email, password);
-      setState(() => _isLoading = false);
 
       if (result == 'Registro exitoso') {
         _showSuccessSnackbar(result);
@@ -64,7 +61,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _showErrorSnackbar(result);
       }
     } catch (e) {
-      setState(() => _isLoading = false);
       _showErrorSnackbar('Error inesperado. Intenta más tarde.');
     }
   }

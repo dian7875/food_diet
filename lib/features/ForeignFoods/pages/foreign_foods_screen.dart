@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../models/recipe.dart';
 import '../services/recipe_service.dart';
 import '../widgets/country_dropdown.dart';
 import '../widgets/recipe_card.dart';
@@ -15,7 +14,7 @@ class ForeignFoodsScreen extends StatefulWidget {
 class _ForeignFoodsScreenState extends State<ForeignFoodsScreen> {
   final RecipeService _recipeService = RecipeService();
   String? selectedCountry;
-  List<Recipe> recipes = [];
+  List<Map<String, dynamic>> recipes = [];
   List<String> countries = [];
   bool isLoading = true;
 
@@ -50,7 +49,10 @@ class _ForeignFoodsScreenState extends State<ForeignFoodsScreen> {
 
     if (country != null) {
       try {
-        final loadedRecipes = await _recipeService.getRecipesByCountry(country);
+        final loadedRecipes = await _recipeService.generateForeingRecipes(
+          country,
+        );
+
         setState(() {
           recipes = loadedRecipes;
           isLoading = false;
@@ -71,17 +73,17 @@ class _ForeignFoodsScreenState extends State<ForeignFoodsScreen> {
     }
   }
 
-  void _showRecipeDetails(Recipe recipe) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => RecipeDetailSheet(recipe: recipe),
-    );
-  }
+_showRecipeDetails(Map<String, dynamic> recipe) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) => RecipeDetailSheet(recipe: recipe),
+  );
+}
 
   Widget _buildHeader() {
     return Container(
