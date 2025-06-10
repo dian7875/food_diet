@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:food_diet/features/Diet/services/diet_service.dart';
+import 'package:food_diet/features/Profile/services/profile_service.dart';
 
 class SpecialNeedsScreen extends StatefulWidget {
   const SpecialNeedsScreen({super.key});
@@ -8,6 +10,8 @@ class SpecialNeedsScreen extends StatefulWidget {
 }
 
 class _SpecialNeedsScreenState extends State<SpecialNeedsScreen> {
+  final ProfileService _profileService = ProfileService();
+   final DietService _dietService = DietService();
   List<Map<String, String>> specialNeeds = [];
   bool isLoading = true;
 
@@ -18,16 +22,46 @@ class _SpecialNeedsScreenState extends State<SpecialNeedsScreen> {
   }
 
   Future<void> _fetchSpecialNeeds() async {
-  
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() {
-      specialNeeds = [
-        {'condition': 'Diabetes', 'notes': 'Evitar azúcares y harinas refinadas'},
-        {'condition': 'Hipertensión', 'notes': 'Reducir sal y grasas saturadas'},
-        {'condition': 'Alergia a gluten', 'notes': 'No consumir trigo, cebada ni centeno'},
-      ];
-      isLoading = false;
-    });
+    try {
+      final profile = await _profileService.getProfile();
+
+      final conditions = profile['conditions'] as List<dynamic>? ?? [];
+
+      setState(() {
+        specialNeeds =
+            conditions.map<Map<String, String>>((cond) {
+              return {
+                'condition': cond['condition'] ?? '',
+                'notes': cond['notes'] ?? '',
+              };
+            }).toList();
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() => isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cargar las condiciones')),
+      );
+    }
+  }
+Future<void> _syncConditionsWithBackend() async {
+    try {
+      final conditionsToSend = specialNeeds.map((need) {
+        return {
+          'name': need['condition'],
+          'notes': need['notes'],
+        };
+      }).toList();
+
+      await _dietService.updateProfile({'conditions': conditionsToSend});
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Condiciones actualizadas exitosamente')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al actualizar las condiciones: $e')),
+      );
+    }
   }
 
   Future<void> _addOrEditNeed({Map<String, String>? oldValue}) async {
@@ -83,6 +117,8 @@ class _SpecialNeedsScreenState extends State<SpecialNeedsScreen> {
           }
         }
       });
+
+      await _syncConditionsWithBackend();
     }
   }
 
@@ -111,6 +147,8 @@ class _SpecialNeedsScreenState extends State<SpecialNeedsScreen> {
       setState(() {
         specialNeeds.remove(value);
       });
+
+      await _syncConditionsWithBackend();
     }
   }
 
