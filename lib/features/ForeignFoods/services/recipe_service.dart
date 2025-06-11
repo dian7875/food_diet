@@ -24,7 +24,7 @@ class RecipeService {
       final futures =
           iterations.map((_) async {
             final response = await api.dio.post(
-              '/recipes/generate/user/$userId/$country',
+              '/foreign-recipes/generate/$country/$userId',
             );
             return response.data as Map<String, dynamic>;
           }).toList();

@@ -12,8 +12,8 @@ class ApiService {
     dio = Dio(
       BaseOptions(
         baseUrl: 'http://192.168.100.107:3000',
-        connectTimeout: Duration(seconds: 20),
-        receiveTimeout: Duration(seconds: 20),
+        connectTimeout: Duration(seconds: 60),
+        receiveTimeout: Duration(seconds: 60),
         headers: {'Content-Type': 'application/json'},
       ),
     );

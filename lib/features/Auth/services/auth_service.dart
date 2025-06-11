@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:food_diet/core/api_service.dart';
+import 'package:food_diet/features/Dashboard/services/dashboard_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final api = ApiService();
+  final _dashboardService = FoodService();
 
   static const String _tokenKey = 'auth_token';
   static const String _userEmailKey = 'user_email';
@@ -23,6 +25,7 @@ class AuthService {
           await prefs.setString(_tokenKey, token);
           await prefs.setInt('userId', userId);
           await prefs.setString(_userEmailKey, email);
+          await _dashboardService.hasPreferences();
           return 'Inicio de sesión exitoso';
         } else {
           return 'Token no recibido del servidor';

@@ -1,9 +1,24 @@
-
 import 'package:food_diet/core/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FoodService {
   final api = ApiService();
+
+Future<void> hasPreferences() async {
+  final prefs = await SharedPreferences.getInstance();
+  try {
+    final int? userId = prefs.getInt('userId');
+    if (userId == null) {
+      throw Exception('User ID no encontrado');
+    }
+    final response = await api.dio.get('/profiles/hasPreference/$userId');
+    await prefs.setBool('hasDiet', response.data=='true');
+  } catch (e) {
+    print('Error al verificar preferencias: $e');
+    await prefs.setBool('hasDiet', false);
+  }
+}
+
 
   Future<List<Map<String, dynamic>>> generateRecipesForUser() async {
     final List<String> categories = [

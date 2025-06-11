@@ -39,10 +39,7 @@ class _DietListState extends State<DietList> {
   }
 
   void _openDialog(BuildContext context, Map<String, dynamic> recipe) {
-    showDialog(
-      context: context,
-      builder: (_) => DietDialog(recipe: recipe),
-    );
+    showDialog(context: context, builder: (_) => DietDialog(recipe: recipe));
   }
 
   @override
@@ -52,7 +49,27 @@ class _DietListState extends State<DietList> {
     }
 
     if (_error != null) {
-      return Center(child: Text(_error!));
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'No se pudieron cargar las recetas.\nPor favor, intente de nuevo.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: _loadRecipes,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Reintentar'),
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     return ListView.builder(

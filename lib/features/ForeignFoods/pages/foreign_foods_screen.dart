@@ -17,6 +17,8 @@ class _ForeignFoodsScreenState extends State<ForeignFoodsScreen> {
   List<Map<String, dynamic>> recipes = [];
   List<String> countries = [];
   bool isLoading = true;
+  bool _isRecipeLoading = false; 
+  String? _recipeError; 
 
   @override
   void initState() {
@@ -44,21 +46,23 @@ class _ForeignFoodsScreenState extends State<ForeignFoodsScreen> {
   Future<void> _updateRecipes(String? country) async {
     setState(() {
       selectedCountry = country;
-      isLoading = true;
+      _isRecipeLoading = true;  
+      _recipeError = null;     
+      recipes = [];
     });
 
     if (country != null) {
       try {
-        final loadedRecipes = await _recipeService.generateForeingRecipes(
-          country,
-        );
-
+        final loadedRecipes = await _recipeService.generateForeingRecipes(country);
         setState(() {
           recipes = loadedRecipes;
-          isLoading = false;
+          _isRecipeLoading = false;  
         });
       } catch (e) {
-        setState(() => isLoading = false);
+        setState(() {
+          _isRecipeLoading = false;  
+          _recipeError = e.toString(); 
+        });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error al cargar las recetas: $e')),
@@ -68,22 +72,22 @@ class _ForeignFoodsScreenState extends State<ForeignFoodsScreen> {
     } else {
       setState(() {
         recipes = [];
-        isLoading = false;
+        _isRecipeLoading = false;
       });
     }
   }
 
-_showRecipeDetails(Map<String, dynamic> recipe) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (context) => RecipeDetailSheet(recipe: recipe),
-  );
-}
+  _showRecipeDetails(Map<String, dynamic> recipe) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => RecipeDetailSheet(recipe: recipe),
+    );
+  }
 
   Widget _buildHeader() {
     return Container(
@@ -142,9 +146,40 @@ _showRecipeDetails(Map<String, dynamic> recipe) {
     );
   }
 
+  Widget _buildRecipeError() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'No se pudieron cargar las recetas.\nPor favor, inténtalo de nuevo.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16, color: Colors.redAccent),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _updateRecipes(selectedCountry),
+              child: const Text('Reintentar'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildContent() {
     if (isLoading && countries.isEmpty) {
       return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_isRecipeLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_recipeError != null) {
+      return _buildRecipeError();
     }
 
     if (recipes.isEmpty) {
