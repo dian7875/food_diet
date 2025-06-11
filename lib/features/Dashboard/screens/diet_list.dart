@@ -23,9 +23,15 @@ class _DietListState extends State<DietList> {
     _loadRecipes();
   }
 
-  Future<void> _loadRecipes() async {
+  Future<void> _loadRecipes({bool force = false}) async {
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
-      final data = await _foodService.generateRecipesForUser();
+      final data = await _foodService.generateRecipesForUser(
+        forceRefresh: force,
+      );
       setState(() {
         _recipes = data;
         _isLoading = false;
@@ -62,7 +68,7 @@ class _DietListState extends State<DietList> {
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
-                onPressed: _loadRecipes,
+                onPressed: () => _loadRecipes(force: true),
                 icon: const Icon(Icons.refresh),
                 label: const Text('Reintentar'),
               ),
@@ -72,16 +78,29 @@ class _DietListState extends State<DietList> {
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: _recipes.length,
-      itemBuilder: (context, index) {
-        final recipe = _recipes[index];
-        return DietCard(
-          recipe: recipe,
-          onTap: () => _openDialog(context, recipe),
-        );
-      },
+    return Stack(
+      children: [
+        ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: _recipes.length,
+          itemBuilder: (context, index) {
+            final recipe = _recipes[index];
+            return DietCard(
+              recipe: recipe,
+              onTap: () => _openDialog(context, recipe),
+            );
+          },
+        ),
+        Positioned(
+          bottom: 20,
+          left: 20,
+          child: FloatingActionButton(
+            onPressed: () => _loadRecipes(force: true),
+            backgroundColor: Colors.blue,
+            child: const Icon(Icons.find_replace_outlined)
+          ),
+        ),
+      ],
     );
   }
 }
