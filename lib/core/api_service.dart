@@ -11,7 +11,7 @@ class ApiService {
   ApiService._internal() {
     dio = Dio(
       BaseOptions(
-        baseUrl: 'http://192.168.100.107:3000',
+        baseUrl: 'https://food-diet.dianprojects.online',
         connectTimeout: Duration(seconds: 60),
         receiveTimeout: Duration(seconds: 60),
         headers: {'Content-Type': 'application/json'},

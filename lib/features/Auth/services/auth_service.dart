@@ -34,11 +34,20 @@ class AuthService {
         return 'Credenciales incorrectas';
       }
     } on DioException catch (dioError) {
-      print('DioError: ${dioError.response?.data ?? dioError.message}');
-      return 'Error en la conexión: verifica tu red o intenta más tarde';
-    } catch (e) {
-      print('Error de autenticación: $e');
-      return 'Ocurrió un error al iniciar sesión. Intenta de nuevo.';
+      final response = dioError.response;
+      if (response != null) {
+        if (response.statusCode == 401) {
+          // Credenciales inválidas
+          return response.data['message'] ?? 'Credenciales inválidas';
+        } else {
+          // Otro tipo de error desde el servidor
+          return 'Error del servidor: ${response.statusCode}';
+        }
+      } else {
+        // Sin respuesta: probablemente es un error de red
+        print('DioError sin respuesta: ${dioError.message}');
+        return 'Error en la conexión: verifica tu red o intenta más tarde';
+      }
     }
   }
 
@@ -77,7 +86,6 @@ class AuthService {
     }
   }
 
-  // Registrar un nuevo usuario - simulado
   Future<String> register(String email, String password) async {
     try {
       final response = await api.dio.post(
@@ -90,9 +98,21 @@ class AuthService {
       } else {
         return 'No se pudo registrar el usuario';
       }
-    } catch (e) {
-      print('Error de registro: $e');
-      return 'Ocurrió un error al registrar. Intenta de nuevo.';
+    } on DioException catch (dioError) {
+      final response = dioError.response;
+      if (response != null) {
+        if (response.statusCode == 409) {
+          // Credenciales inválidas
+          return response.data['message'] ?? 'Usuario ya existe.';
+        } else {
+          // Otro tipo de error desde el servidor
+          return 'Error del servidor: ${response.statusCode}';
+        }
+      } else {
+        // Sin respuesta: probablemente es un error de red
+        print('DioError sin respuesta: ${dioError.message}');
+        return 'Error en la conexión: verifica tu red o intenta más tarde';
+      }
     }
   }
 
