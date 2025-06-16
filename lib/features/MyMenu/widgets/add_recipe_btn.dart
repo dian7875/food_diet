@@ -3,7 +3,7 @@ import 'package:food_diet/features/MyMenu/widgets/new_recipe.dart';
 
 class AddRecipeButton extends StatelessWidget {
   final VoidCallback onRefresh;
-  final String mealType; 
+  final String mealType;
 
   const AddRecipeButton({
     super.key,
@@ -11,14 +11,18 @@ class AddRecipeButton extends StatelessWidget {
     required this.mealType,
   });
 
-  void _openCreateDialog(BuildContext context) {
-    showDialog(
+  void _openCreateDialog(BuildContext context) async {
+    final message = await showDialog<String>(
       context: context,
-      builder: (_) => CreateFoodDialog(
-        onRefresh: onRefresh,
-        mealType: mealType,
-      ),
+      builder:
+          (_) => CreateFoodDialog(mealType: mealType, onRefresh: onRefresh),
     );
+
+    if (message != null && context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    }
   }
 
   @override

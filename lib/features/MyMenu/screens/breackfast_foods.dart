@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:food_diet/features/Dashboard/services/dashboard_service.dart';
 import 'package:food_diet/features/Dashboard/widgets/diet_dialog.dart';
+import 'package:food_diet/features/MyMenu/services/my_menu_service.dart';
 import 'package:food_diet/features/MyMenu/widgets/add_recipe_btn.dart';
 import 'package:food_diet/features/MyMenu/widgets/food_card.dart';
 
@@ -12,7 +12,7 @@ class BreakfastFoodsScreen extends StatefulWidget {
 }
 
 class _BreakfastFoodsScreenState extends State<BreakfastFoodsScreen> {
-  final FoodService _foodService = FoodService();
+  final MyMenuService _foodService = MyMenuService();
 
   List<Map<String, dynamic>> _breakfastFoods = [];
   bool _isLoading = true;
@@ -26,7 +26,7 @@ class _BreakfastFoodsScreenState extends State<BreakfastFoodsScreen> {
 
   Future<void> _loadBreakfastFoods() async {
     try {
-      final data = await _foodService.getRecipes();
+      final data = await _foodService.getSavedFoods('desayuno');
       setState(() {
         _breakfastFoods = data;
         _isLoading = false;
@@ -94,7 +94,7 @@ class _BreakfastFoodsScreenState extends State<BreakfastFoodsScreen> {
               ),
       floatingActionButton: AddRecipeButton(
         onRefresh: _loadBreakfastFoods,
-        mealType: 'breackfast',
+        mealType: 'desayuno',
       ),
     );
   }

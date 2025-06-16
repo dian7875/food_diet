@@ -4,6 +4,7 @@ class RecipeRepository {
   static final List<Recipe> recipes = [
     // Japón 🇯🇵
     Recipe(
+      category: "",
       name: 'Sushi Roll',
       country: 'Japón 🇯🇵',
       description: 'Rollos de arroz con pescado fresco y vegetales',
@@ -26,6 +27,7 @@ class RecipeRepository {
       ],
     ),
     Recipe(
+      category: "",
       name: 'Tempura',
       country: 'Japón 🇯🇵',
       description: 'Vegetales y mariscos fritos en una ligera capa de masa',
@@ -49,6 +51,7 @@ class RecipeRepository {
 
     // Italia 🇮🇹
     Recipe(
+      category: "",
       name: 'Pasta Carbonara',
       country: 'Italia 🇮🇹',
       description: 'Pasta cremosa con panceta y queso pecorino',
@@ -69,6 +72,7 @@ class RecipeRepository {
       ],
     ),
     Recipe(
+      category: "",
       name: 'Lasagna',
       country: 'Italia 🇮🇹',
       description: 'Capas de pasta con carne, salsa de tomate y bechamel',
@@ -91,6 +95,7 @@ class RecipeRepository {
 
     // Tailandia 🇹🇭
     Recipe(
+      category: "",
       name: 'Pad Thai',
       country: 'Tailandia 🇹🇭',
       description: 'Fideos de arroz salteados con camarones y cacahuetes',
@@ -112,6 +117,7 @@ class RecipeRepository {
       ],
     ),
     Recipe(
+      category: "",
       name: 'Som Tam',
       country: 'Tailandia 🇹🇭',
       description: 'Ensalada picante de papaya verde rallada',
@@ -135,6 +141,7 @@ class RecipeRepository {
 
     // México 🇲🇽
     Recipe(
+      category: "",
       name: 'Tacos al Pastor',
       country: 'México 🇲🇽',
       description: 'Tortillas con carne marinada, piña y cebolla',
@@ -156,6 +163,7 @@ class RecipeRepository {
       ],
     ),
     Recipe(
+      category: "",
       name: 'Chiles en Nogada',
       country: 'México 🇲🇽',
       description: 'Chile poblano relleno con salsa de nuez y granada',
@@ -179,6 +187,7 @@ class RecipeRepository {
 
     // Francia 🇫🇷
     Recipe(
+      category: "",
       name: 'Ratatouille',
       country: 'Francia 🇫🇷',
       description: 'Estofado de vegetales provenzal',
@@ -200,6 +209,7 @@ class RecipeRepository {
       ],
     ),
     Recipe(
+      category: "",
       name: 'Crêpes',
       country: 'Francia 🇫🇷',
       description: 'Delgadas tortillas dulces o saladas',

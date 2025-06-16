@@ -1,36 +1,49 @@
-import 'package:dio/dio.dart';
+import 'package:food_diet/core/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/recipe.dart';
 import '../repository/recipe_repository.dart';
 
 class RecipeService {
-  final Dio _dio = Dio();
+  final api = ApiService();
 
-  // En el futuro, esto se conectará a una API real
-  Future<List<Recipe>> getRecipes() async {
+  Future<List<Map<String, dynamic>>> generateForeingRecipes(
+    String country,
+  ) async {
+    final List<String> iterations = ['1', '2', '3'];
+    final List<Map<String, dynamic>> recipes = [];
+
     try {
-      // Simulando una llamada a API
-      await Future.delayed(const Duration(milliseconds: 800));
-      return RecipeRepository.recipes;
+      final prefs = await SharedPreferences.getInstance();
+      final int? userId = prefs.getInt('userId');
 
-      // Cuando tengas una API real, usarías algo como:
-      // final response = await _dio.get('tu-api-url/recipes');
-      // return (response.data as List)
-      //     .map((json) => Recipe.fromJson(json))
-      //     .toList();
+      if (userId == null) {
+        throw Exception('User ID no encontrado');
+      }
+
+      final futures =
+          iterations.map((_) async {
+            final response = await api.dio.post(
+              '/foreign-recipes/generate/$country/$userId',
+            );
+            return response.data as Map<String, dynamic>;
+          }).toList();
+
+      final results = await Future.wait(futures);
+
+      recipes.addAll(results);
+
+      return recipes;
     } catch (e) {
-      throw Exception('Error al cargar las recetas: $e');
+      print('Error al generar recetas: $e');
+      return [];
     }
   }
 
   Future<List<String>> getCountries() async {
     try {
-      // Simulando una llamada a API
       await Future.delayed(const Duration(milliseconds: 500));
       return RecipeRepository.getCountries();
-
-      // Cuando tengas una API real:
-      // final response = await _dio.get('tu-api-url/countries');
-      // return List<String>.from(response.data);
     } catch (e) {
       throw Exception('Error al cargar los países: $e');
     }
@@ -38,17 +51,8 @@ class RecipeService {
 
   Future<List<Recipe>> getRecipesByCountry(String country) async {
     try {
-      // Simulando una llamada a API
       await Future.delayed(const Duration(milliseconds: 600));
       return RecipeRepository.getRecipesByCountry(country);
-
-      // Cuando tengas una API real:
-      // final response = await _dio.get('tu-api-url/recipes',
-      //   queryParameters: {'country': country}
-      // );
-      // return (response.data as List)
-      //     .map((json) => Recipe.fromJson(json))
-      //     .toList();
     } catch (e) {
       throw Exception('Error al cargar las recetas del país: $e');
     }

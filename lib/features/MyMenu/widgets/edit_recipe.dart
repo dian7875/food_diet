@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_diet/features/Diet/services/diet_service.dart';
+import 'package:food_diet/features/MyMenu/services/my_menu_service.dart';
 
 class EditFoodDialog extends StatefulWidget {
   final Map<String, dynamic> recipe;
@@ -25,18 +25,23 @@ class _EditFoodDialogState extends State<EditFoodDialog> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.recipe['name']);
+    _nameController = TextEditingController(text: widget.recipe['name'] ?? '');
     _descriptionController = TextEditingController(
-      text: widget.recipe['description'],
+      text: widget.recipe['description'] ?? '',
     );
+
+    final ingredients =
+        (widget.recipe['ingredients'] as List?)?.cast<String>() ?? [];
+    final steps = (widget.recipe['steps'] as List?)?.cast<String>() ?? [];
+    final dietaryInfo =
+        (widget.recipe['dietary_info'] as List?)?.cast<String>() ?? [];
+
     _ingredientsController = TextEditingController(
-      text: (widget.recipe['ingredients'] as List).join(', '),
+      text: ingredients.join(', '),
     );
-    _stepsController = TextEditingController(
-      text: (widget.recipe['steps'] as List).join('\n'),
-    );
+    _stepsController = TextEditingController(text: steps.join('\n'));
     _dietaryInfoController = TextEditingController(
-      text: (widget.recipe['dietary_info'] as List).join(', '),
+      text: dietaryInfo.join(', '),
     );
   }
 
@@ -51,22 +56,53 @@ class _EditFoodDialogState extends State<EditFoodDialog> {
   }
 
   void _submit() async {
+    
+    if (_nameController.text.trim().isEmpty ||
+        _ingredientsController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nombre e ingredientes son obligatorios')),
+      );
+      
+      return;
+    }
+
     final payload = {
       'name': _nameController.text.trim(),
       'description': _descriptionController.text.trim(),
       'ingredients':
-          _ingredientsController.text.split(',').map((e) => e.trim()).toList(),
-      'steps': _stepsController.text.split('\n').map((e) => e.trim()).toList(),
-      'dietary_info':
-          _dietaryInfoController.text.split(',').map((e) => e.trim()).toList(),
+          _ingredientsController.text
+              .split(',')
+              .map((e) => e.trim())
+              .where((e) => e.isNotEmpty)
+              .toList(),
+      'steps':
+          _stepsController.text
+              .split('\n')
+              .map((e) => e.trim())
+              .where((e) => e.isNotEmpty)
+              .toList(),
     };
 
-    final foodService = DietService();
-    await foodService.updateRecipeById(widget.recipe['id'].toString(), payload);
+    final foodService = MyMenuService();
 
-    Navigator.of(context).pop();
-    widget.onRefresh();
+  try {
+    final message = await foodService.updateRecipeById(
+      widget.recipe['id'].toString(),
+      payload,
+    );
+
+    if (context.mounted) {
+      Navigator.of(context).pop(message);
+      widget.onRefresh();
+    }
+  } catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al actualizar: $e')),
+      );
+    }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -95,12 +131,6 @@ class _EditFoodDialogState extends State<EditFoodDialog> {
                 labelText: 'Pasos (uno por línea)',
               ),
               maxLines: 4,
-            ),
-            TextField(
-              controller: _dietaryInfoController,
-              decoration: const InputDecoration(
-                labelText: 'Info dietética (separada por coma)',
-              ),
             ),
           ],
         ),

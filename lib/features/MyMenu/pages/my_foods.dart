@@ -4,6 +4,22 @@ import 'package:go_router/go_router.dart';
 class MyFoods extends StatelessWidget {
   const MyFoods({super.key});
 
+ Color _getCategoryColor(String category) {
+    switch (category.toLowerCase()) {
+      case 'desayuno':
+        return Colors.orange.shade300;
+      case 'almuerzo':
+        return Colors.green.shade400;
+      case 'cena':
+        return Colors.purple.shade400;
+      case 'merienda':
+        return Colors.blue.shade400;
+      default:
+        return Colors.grey.shade400;
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final meals = [
@@ -12,15 +28,18 @@ class MyFoods extends StatelessWidget {
       {'name': 'Cena', 'route': '/MyFoods/dinner', 'icon': Icons.dinner_dining},
       {'name': 'Merienda', 'route': '/MyFoods/snack', 'icon': Icons.emoji_food_beverage},
     ];
-
-    return Scaffold(
+   return Scaffold(
       appBar: AppBar(
         title: const Text('Tus comidas del día'),
         backgroundColor: const Color(0xFFD1D696),
-        titleTextStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold,  fontSize: 20,), 
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
         centerTitle: true,
       ),
-           body: Padding(
+      body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,26 +56,46 @@ class MyFoods extends StatelessWidget {
             Expanded(
               child: ListView.separated(
                 itemCount: meals.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 30),
+                separatorBuilder: (_, __) => const SizedBox(height: 24),
                 itemBuilder: (context, index) {
                   final meal = meals[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFECEAD1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: const Border(
-                        left: BorderSide(color: Color(0xFFFCA838), width: 6),
+                  final name = meal['name'] as String;
+                  final color = _getCategoryColor(name);
+
+                  return GestureDetector(
+                    onTap: () => context.go(meal['route'] as String),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
+                          )
+                        ],
+                        border: Border(
+                          left: BorderSide(color: color, width: 6),
+                        ),
                       ),
-                    ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      leading: Icon(meal['icon'] as IconData, color: Color(0xFFFCA838), size: 32),
-                      title: Text(
-                        meal['name'] as String,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      child: Row(
+                        children: [
+                          Icon(meal['icon'] as IconData, color: color, size: 32),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              name,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Icon(Icons.chevron_right, color: color),
+                        ],
                       ),
-                      trailing: const Icon(Icons.chevron_right, color: Color(0xFFFCA838)),
-                      onTap: () => context.go(meal['route'] as String),
                     ),
                   );
                 },

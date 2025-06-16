@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../models/recipe.dart';
 import '../services/recipe_service.dart';
 import '../widgets/country_dropdown.dart';
 import '../widgets/recipe_card.dart';
@@ -15,9 +14,11 @@ class ForeignFoodsScreen extends StatefulWidget {
 class _ForeignFoodsScreenState extends State<ForeignFoodsScreen> {
   final RecipeService _recipeService = RecipeService();
   String? selectedCountry;
-  List<Recipe> recipes = [];
+  List<Map<String, dynamic>> recipes = [];
   List<String> countries = [];
   bool isLoading = true;
+  bool _isRecipeLoading = false; 
+  String? _recipeError; 
 
   @override
   void initState() {
@@ -45,18 +46,23 @@ class _ForeignFoodsScreenState extends State<ForeignFoodsScreen> {
   Future<void> _updateRecipes(String? country) async {
     setState(() {
       selectedCountry = country;
-      isLoading = true;
+      _isRecipeLoading = true;  
+      _recipeError = null;     
+      recipes = [];
     });
 
     if (country != null) {
       try {
-        final loadedRecipes = await _recipeService.getRecipesByCountry(country);
+        final loadedRecipes = await _recipeService.generateForeingRecipes(country);
         setState(() {
           recipes = loadedRecipes;
-          isLoading = false;
+          _isRecipeLoading = false;  
         });
       } catch (e) {
-        setState(() => isLoading = false);
+        setState(() {
+          _isRecipeLoading = false;  
+          _recipeError = e.toString(); 
+        });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error al cargar las recetas: $e')),
@@ -66,12 +72,12 @@ class _ForeignFoodsScreenState extends State<ForeignFoodsScreen> {
     } else {
       setState(() {
         recipes = [];
-        isLoading = false;
+        _isRecipeLoading = false;
       });
     }
   }
 
-  void _showRecipeDetails(Recipe recipe) {
+  _showRecipeDetails(Map<String, dynamic> recipe) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -140,9 +146,40 @@ class _ForeignFoodsScreenState extends State<ForeignFoodsScreen> {
     );
   }
 
+  Widget _buildRecipeError() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'No se pudieron cargar las recetas.\nPor favor, inténtalo de nuevo.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16, color: Colors.redAccent),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _updateRecipes(selectedCountry),
+              child: const Text('Reintentar'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildContent() {
     if (isLoading && countries.isEmpty) {
       return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_isRecipeLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_recipeError != null) {
+      return _buildRecipeError();
     }
 
     if (recipes.isEmpty) {

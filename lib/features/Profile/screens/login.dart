@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_diet/features/Auth/services/auth_service.dart';
 import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -9,6 +10,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -19,24 +21,50 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }  void _submitForm() {
-    // Simplemente navegar al dashboard sin validación
-    context.go('/dashboard');
+  }
+
+  void _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+
+      final scaffoldMessenger = ScaffoldMessenger.of(context);
+      final navigator = Navigator.of(context);
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const Center(child: CircularProgressIndicator()),
+      );
+
+      final message = await _authService.login(email, password);
+
+      navigator.pop();
+
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor:
+              message.contains('exitoso') ? Colors.green : Colors.red,
+        ),
+      );
+
+      if (message.contains('exitoso')) {
+        context.go('/dashboard');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final lightGreen = const Color.fromARGB(255, 213, 213, 152);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Inicio De Sesión',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: lightGreen,
         centerTitle: true,
@@ -44,7 +72,10 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          height: size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.top,
+          height:
+              size.height -
+              AppBar().preferredSize.height -
+              MediaQuery.of(context).padding.top,
           width: size.width,
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -70,7 +101,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [                        // Email field
+                      children: [
+                        // Email field
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
@@ -88,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        
+
                         // Password field
                         TextFormField(
                           controller: _passwordController,
@@ -98,8 +130,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             prefixIcon: const Icon(Icons.lock),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _isPasswordVisible 
-                                    ? Icons.visibility 
+                                _isPasswordVisible
+                                    ? Icons.visibility
                                     : Icons.visibility_off,
                               ),
                               onPressed: () {
@@ -117,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 30),                        // Login button
+                        const SizedBox(height: 30), // Login button
                         ElevatedButton(
                           onPressed: _submitForm,
                           style: ElevatedButton.styleFrom(
@@ -142,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-                // Password recovery and Register new account
+              // Password recovery and Register new account
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

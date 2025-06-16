@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_diet/features/Auth/services/auth_service.dart';
 import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -14,17 +15,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
   bool _isPasswordVisible = false;
-
-  @override
+  
+ @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
-  }
-  void _submitForm() {
-    // Simplemente navegar al login
-    context.go('/login');
   }
 
   void _showErrorSnackbar(String message) {
@@ -34,6 +31,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
         backgroundColor: Colors.red,
       ),
     );
+  }
+
+  void _showSuccessSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+  Future<void> _submitForm() async {
+    if (!_formKey.currentState!.validate()) return;
+
+
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    try {
+      final result = await AuthService().register(email, password);
+
+      if (result == 'Registro exitoso') {
+        _showSuccessSnackbar(result);
+        Future.delayed(const Duration(seconds: 1), () {
+          context.go('/login');
+        });
+      } else {
+        _showErrorSnackbar(result);
+      }
+    } catch (e) {
+      _showErrorSnackbar('Error inesperado. Intenta más tarde.');
+    }
   }
 
   @override
