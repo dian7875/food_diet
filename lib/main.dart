@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:food_diet/routes/app_routes.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
 Future<void> initHive() async {
   await Hive.initFlutter();
   await Hive.openBox('recipesBox');
+  await Hive.openBox('favorites');
 }
 
 void main() async {

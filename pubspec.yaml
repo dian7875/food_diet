@@ -16,15 +16,15 @@ dependencies:
   hive_flutter: ^1.1.0
   path_provider: ^2.1.5
   intl: ^0.20.2
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
-flutter_icons:
+flutter_launcher_icons:
   android: true
-  ios: false
+  ios: true
   image_path: "assets/app_icon/app_icon.png"
   
 flutter:

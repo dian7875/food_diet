@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_diet/features/Dashboard/services/dashboard_service.dart';
+import 'package:food_diet/features/MyMenu/services/my_menu_service.dart';
 import '../widgets/diet_card.dart';
 import '../widgets/diet_dialog.dart';
 
@@ -12,7 +13,7 @@ class DietList extends StatefulWidget {
 
 class _DietListState extends State<DietList> {
   final FoodService _foodService = FoodService();
-
+  final MyMenuService _menuService = MyMenuService();
   List<Map<String, dynamic>> _recipes = [];
   bool _isLoading = true;
   String? _error;
@@ -88,6 +89,11 @@ class _DietListState extends State<DietList> {
             return DietCard(
               recipe: recipe,
               onTap: () => _openDialog(context, recipe),
+              isFavorite: _menuService.isFavorite(recipe['name']),
+              onToggleFavorite: () async {
+                await _menuService.toggleFavorite(recipe);
+                setState(() {});
+              },
             );
           },
         ),
@@ -97,7 +103,7 @@ class _DietListState extends State<DietList> {
           child: FloatingActionButton(
             onPressed: () => _loadRecipes(force: true),
             backgroundColor: Colors.blue,
-            child: const Icon(Icons.find_replace_outlined)
+            child: const Icon(Icons.find_replace_outlined),
           ),
         ),
       ],

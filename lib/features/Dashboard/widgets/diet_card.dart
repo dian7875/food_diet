@@ -3,8 +3,16 @@ import 'package:flutter/material.dart';
 class DietCard extends StatelessWidget {
   final Map<String, dynamic> recipe;
   final VoidCallback onTap;
+  final bool isFavorite;
+  final VoidCallback onToggleFavorite;
 
-  const DietCard({super.key, required this.recipe, required this.onTap});
+  const DietCard({
+    super.key,
+    required this.recipe,
+    required this.onTap,
+    required this.isFavorite,
+    required this.onToggleFavorite,
+  });
 
   // Un método para mapear categorías a colores
   Color _getCategoryColor(String category) {
@@ -48,25 +56,36 @@ class DietCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Badge de categoría arriba a la derecha
-            Align(
-              alignment: Alignment.topRight,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: _getCategoryColor(category).withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                  ),
+                  color: Colors.redAccent,
+                  onPressed: onToggleFavorite,
                 ),
-                child: Text(
-                  category.toUpperCase(),
-                  style: TextStyle(
-                    color: _getCategoryColor(category),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    letterSpacing: 1.2,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _getCategoryColor(category).withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    category.toUpperCase(),
+                    style: TextStyle(
+                      color: _getCategoryColor(category),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      letterSpacing: 1.2,
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
 
             const SizedBox(height: 8),
@@ -84,10 +103,7 @@ class DietCard extends StatelessWidget {
 
             Text(
               recipe['description'] ?? '',
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0xFF555555),
-              ),
+              style: const TextStyle(fontSize: 14, color: Color(0xFF555555)),
             ),
           ],
         ),
