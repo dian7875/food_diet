@@ -116,20 +116,48 @@ class AuthService {
     }
   }
 
-  // Restaurar contraseña - simulado
-  Future<bool> resetPassword(String email) async {
+  Future<String> resetPassword(String email) async {
     try {
-      // Aquí iría la lógica para restaurar la contraseña
-      // Por ahora, simularemos que se envió un correo
-
-      if (email.contains('@') && email.contains('.')) {
-        await Future.delayed(const Duration(seconds: 1));
-        return true;
+      final response = await api.dio.patch(
+        '/auth/recover-password',
+        data: {'email': email},
+      );
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_userEmailKey, email);
+      return response.data?['message'] ?? 'Actualización completada';
+    } on DioException catch (dioError) {
+      final response = dioError.response;
+      if (response != null) {
+        return response.data['message'] ?? 'Usuario ya existe.';
+      } else {
+        print('DioError sin respuesta: ${dioError.message}');
+        return 'Error en la conexión: verifica tu red o intenta más tarde';
       }
-      return false;
-    } catch (e) {
-      print('Error al restaurar contraseña: $e');
-      return false;
+    }
+  }
+
+  Future<String> changePassword(
+    String email,
+    String temporalPassword,
+    String newPassword,
+  ) async {
+    try {
+      final response = await api.dio.patch(
+        '/auth/resetPasword',
+        data: {
+          'email': email,
+          'temporalPassword': temporalPassword,
+          'newPassword': newPassword,
+        },
+      );
+      return response.data?['message'] ?? 'Contraseña cambiada correctamente';
+    } on DioException catch (dioError) {
+      final response = dioError.response;
+      if (response != null) {
+        return response.data['message'] ?? 'Error desconocido.';
+      } else {
+        return 'Error de red. Intenta más tarde.';
+      }
     }
   }
 }

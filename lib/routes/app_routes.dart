@@ -1,3 +1,4 @@
+import 'package:food_diet/features/Auth/pages/change_password.dart';
 import 'package:food_diet/features/Profile/Pages/profile.dart';
 import 'package:food_diet/features/Dashboard/dashboard.dart';
 import 'package:food_diet/features/Auth/pages/welcome_page.dart';
@@ -22,8 +23,8 @@ class AppRoutes {
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
       GoRoute(path: '/forgot-password', builder: (context, state) => const fp.ForgotPasswordScreen()),
+      GoRoute(path: '/change-password', builder: (context, state) => const ChangePasswordScreen()),
       ShellRoute(        builder: (context, state, child) {
-          // Siempre permite acceso, sin verificación de autenticación
           return MainScreen(child: child);
         },
         routes: [
